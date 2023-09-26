@@ -1,0 +1,108 @@
+name: UI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  install:
+    name: Install
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: |
+            ui/node_modules
+          key: modules-${{ hashFiles('bun.lockb') }}
+
+      - name: Install Dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: cd ui && bun install
+
+  format:
+    name: Format
+    needs: install
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: |
+            ui/node_modules
+          key: modules-${{ hashFiles('bun.lockb') }}
+
+      - name: Format
+        run: cd ui && bun run format:check
+
+  lint:
+    name: Lint
+    needs: install
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: |
+            ui/node_modules
+          key: modules-${{ hashFiles('bun.lockb') }}
+
+      - name: Lint
+        run: cd ui && bun run lint
+
+  build:
+    name: Build
+    needs: install
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: |
+            ui/node_modules
+          key: modules-${{ hashFiles('bun.lockb') }}
+
+      - name: Build
+        run: cd ui && bun run build
+
