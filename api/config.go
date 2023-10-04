@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"strings"
 
 	"github.com/go-chi/cors"
@@ -19,7 +18,9 @@ func LoadConfig() *Config {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error while reading config file %s", err)
+		// TODO handle error
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+		}
 	}
 
 	return &Config{
