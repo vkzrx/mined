@@ -28,7 +28,7 @@ jobs:
         with:
           path: |
             ui/node_modules
-          key: modules-${{ hashFiles('bun.lockb') }}
+          key: modules-${{ hashFiles('ui/bun.lockb') }}
 
       - name: Install Dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -53,7 +53,7 @@ jobs:
         with:
           path: |
             ui/node_modules
-          key: modules-${{ hashFiles('bun.lockb') }}
+          key: modules-${{ hashFiles('ui/bun.lockb') }}
 
       - name: Format
         run: cd ui && bun run format:check
@@ -77,7 +77,7 @@ jobs:
         with:
           path: |
             ui/node_modules
-          key: modules-${{ hashFiles('bun.lockb') }}
+          key: modules-${{ hashFiles('ui/bun.lockb') }}
 
       - name: Lint
         run: cd ui && bun run lint
@@ -101,7 +101,7 @@ jobs:
         with:
           path: |
             ui/node_modules
-          key: modules-${{ hashFiles('bun.lockb') }}
+          key: modules-${{ hashFiles('ui/bun.lockb') }}
 
       - name: Build
         run: cd ui && bun run build
