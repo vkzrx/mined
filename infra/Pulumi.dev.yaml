@@ -1,0 +1,8 @@
+config:
+  gcp:project: stoked-duality-400012
+  gcp:region: us-west1
+  gcp:zone: us-west1-a
+  mined:instanceTag: api
+  mined:machineType: e2-standard-2
+  mined:osImage: debian-11
+  mined:servicePort: "8080"
