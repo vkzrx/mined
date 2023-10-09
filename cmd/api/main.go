@@ -10,9 +10,14 @@ import (
 func main() {
 	ctx := context.Background()
 
-	server := api.NewServer(ctx)
+	server, err := api.NewServer(ctx)
+	if err != nil {
+		log.Fatalf("Server failed to initialize: %v", err)
+	}
 
-	server.MountHandlers()
+	if err := server.MountHandlers(); err != nil {
+		log.Fatalf("Server failed to mount handlers: %v", err)
+	}
 
 	if err := server.Launch(); err != nil {
 		log.Fatalf("Server failed to launch: %v", err)

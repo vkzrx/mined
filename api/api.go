@@ -19,15 +19,21 @@ type Server struct {
 	Context context.Context
 }
 
-func NewServer(ctx context.Context) *Server {
-	return &Server{
+func NewServer(ctx context.Context) (*Server, error) {
+	config, err := LoadConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	server := &Server{
 		Router:  chi.NewRouter(),
-		Config:  LoadConfig(),
+		Config:  config,
 		Context: ctx,
 	}
+	return server, nil
 }
 
-func (s *Server) MountHandlers() {
+func (s *Server) MountHandlers() error {
 	s.Router.Use(middleware.RequestID)
 	s.Router.Use(middleware.Logger)
 	s.Router.Use(middleware.Heartbeat("/_health"))
@@ -35,8 +41,15 @@ func (s *Server) MountHandlers() {
 	s.Router.Use(middleware.Recoverer)
 
 	vm := newVMApi(s.Context)
+	mc, err := newMinecraftApi(s.Context)
+	if err != nil {
+		return err
+	}
 
-	s.Router.Mount("/", vm.Router)
+	s.Router.Mount("/vms", vm.Router)
+	s.Router.Mount("/minecraft", mc.Router)
+
+	return nil
 }
 
 func (s *Server) Launch() error {

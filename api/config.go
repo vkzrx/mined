@@ -12,21 +12,22 @@ type Config struct {
 	Cors cors.Options
 }
 
-func LoadConfig() *Config {
+func LoadConfig() (*Config, error) {
 	viper.SetConfigFile(".env")
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		// TODO handle error
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			return nil, err
 		}
 	}
 
-	return &Config{
+	config := &Config{
 		Port: viper.GetString("PORT"),
 		Cors: LoadCorsOptions(),
 	}
+	return config, nil
 }
 
 func LoadCorsOptions() cors.Options {

@@ -19,14 +19,12 @@ func newVMApi(ctx context.Context) *vmApi {
 		Context: ctx,
 	}
 
-	api.Router.Route("/vms", func(r chi.Router) {
-		r.Get("/{project}", api.list)
-		r.Get("/{project}/{name}", api.get)
+	api.Router.Get("/{project}", api.list)
+	api.Router.Get("/{project}/{name}", api.get)
 
-		r.Post("/start/{project}/{name}", api.start)
-		r.Post("/suspend/{project}/{name}", api.suspend)
-		r.Post("/stop/{project}/{name}", api.stop)
-	})
+	api.Router.Post("/start/{project}/{name}", api.start)
+	api.Router.Post("/suspend/{project}/{name}", api.suspend)
+	api.Router.Post("/stop/{project}/{name}", api.stop)
 
 	return api
 }

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "github.com/vkzrx/mined/vm/proto";
+
+package vm;
+
+service MinecraftService {
+  rpc Start (StartRequest) returns (StartResponse) {}
+}
+
+message StartRequest {}
+message StartResponse {
+  string message = 1;
+}

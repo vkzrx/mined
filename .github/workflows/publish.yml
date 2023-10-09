@@ -12,6 +12,14 @@ jobs:
   build-and-push-image:
     name: Publish
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./cmd/api/Dockerfile
+            image: docker.io/vkzrx/mined
+          - dockerfile: ./cmd/vm/Dockerfile
+            image: docker.io/vkzrx/minecraft-service
 
     steps:
       - name: Checkout repository
@@ -27,13 +35,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: vkzrx/mined
+          images: ${{ matrix.image }}
 
-      - name: Build and push Docker image
+      - name: Build & Push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: .
-          file: ./cmd/api/Dockerfile
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
